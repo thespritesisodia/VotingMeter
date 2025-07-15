@@ -84,8 +84,9 @@ function showCandidates() {
         const card = document.createElement('div');
         card.className = 'candidate-card';
         card.innerHTML = `
+            <img src="https://via.placeholder.com/56x56.png?text=Photo" alt="${candidate.name}" class="candidate-photo" />
             <span class="candidate-name">${candidate.name}</span>
-            <button onclick="voteCandidate('${candidate.id}')">Vote</button>
+            <button class="vote-btn" onclick="voteCandidate('${candidate.id}')">Vote</button>
         `;
         candidatesList.appendChild(card);
     });
