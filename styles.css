@@ -303,3 +303,27 @@ button:hover, button:focus {
 }
 
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,600&display=swap'); 
+
+#thankyou-animation {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 18px;
+}
+#checkmark {
+    stroke-dasharray: 166;
+    stroke-dashoffset: 166;
+    animation: checkmark-draw 1s ease forwards;
+}
+@keyframes checkmark-draw {
+    to {
+        stroke-dashoffset: 0;
+    }
+}
+#thankyou-message {
+    text-align: center;
+    color: #4BB543;
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin-bottom: 18px;
+} 

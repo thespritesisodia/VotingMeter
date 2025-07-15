@@ -94,6 +94,12 @@ function showCandidates() {
 
 function voteCandidate(candidateId) {
     // Voting logic will be added later
+    const title = localStorage.getItem('teacherTitle') || '';
+    const name = localStorage.getItem('teacherName') || '';
+    const thankyouMsg = document.getElementById('thankyou-message');
+    if (thankyouMsg) {
+        thankyouMsg.textContent = `Thank You ${title} ${name} for your precious vote!`;
+    }
     showSection('vote-confirmation');
 }
 
