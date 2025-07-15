@@ -1,7 +1,14 @@
+html, body {
+    height: 100%;
+    min-height: 100vh;
+}
+
 body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
     background: #0a0a0a;
     color: #fff;
-    min-height: 100vh;
     margin: 0;
     padding: 0;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -27,6 +34,7 @@ body::after {
     margin: 0 auto;
     padding: 40px 24px 32px 24px;
     margin-top: 70px;
+    flex: 1 0 auto;
 }
 
 h1 {
@@ -222,6 +230,28 @@ button:hover, button:focus {
     background: linear-gradient(90deg, #fc5c7d 0%, #6a82fb 100%);
     color: #fff;
     box-shadow: 0 4px 16px #fc5c7d55;
+}
+
+#site-footer {
+    width: 100%;
+    text-align: center;
+    padding: 12px 0 10px 0;
+    background: transparent;
+    color: #cccccc;
+    font-size: 1.05rem;
+    letter-spacing: 0.5px;
+    z-index: 50;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    position: relative;
+    bottom: 0;
+    left: 0;
+}
+
+#site-footer .copyright-logo {
+    font-size: 1.1em;
+    vertical-align: middle;
+    margin-right: 4px;
+    color: #fc5c7d;
 }
 
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,600&display=swap'); 
