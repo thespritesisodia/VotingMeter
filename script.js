@@ -175,54 +175,94 @@ function showResults() {
     }
     tableHtml += `</tbody></table></div>`;
 
-    // Candidate summary for each profile
-    const candidateVotes = {};
-    Object.keys(profiles).forEach(profileKey => {
-        const profile = profiles[profileKey];
-        Object.keys(profile.groups).forEach(groupKey => {
-            profile.groups[groupKey].forEach(candidate => {
-                candidateVotes[candidate.id] = 0;
-            });
-        });
-    });
-    votes.forEach(vote => {
-        if (candidateVotes[vote.candidateId] !== undefined) {
-            candidateVotes[vote.candidateId]++;
-        }
-    });
-
-    // Separate summary for each profile
-    let summaryHtmlCaptain = `<div class='results-summary-box'><h3 style='color:#fc5c7d;margin-top:0;'>School Captain</h3>`;
-    Object.keys(profiles.captain.groups).forEach(groupKey => {
-        summaryHtmlCaptain += `<h4 style='color:#6a82fb;margin-top:1em;'>Group ${groupKey}</h4><ul style='margin-bottom:1.5em;'>`;
-        profiles.captain.groups[groupKey].forEach(candidate => {
-            summaryHtmlCaptain += `<li style='margin-bottom:0.5em;'><b>${candidate.name}</b>: ${candidateVotes[candidate.id]} vote(s)`;
-            summaryHtmlCaptain += `</li>`;
-        });
-        summaryHtmlCaptain += `</ul>`;
-    });
-    summaryHtmlCaptain += `</div>`;
-
-    let summaryHtmlVice = `<div class='results-summary-box'><h3 style='color:#fc5c7d;margin-top:0;'>Vice Captain</h3>`;
-    Object.keys(profiles.vice.groups).forEach(groupKey => {
-        summaryHtmlVice += `<h4 style='color:#6a82fb;margin-top:1em;'>Group ${groupKey}</h4><ul style='margin-bottom:1.5em;'>`;
-        profiles.vice.groups[groupKey].forEach(candidate => {
-            summaryHtmlVice += `<li style='margin-bottom:0.5em;'><b>${candidate.name}</b>: ${candidateVotes[candidate.id]} vote(s)`;
-            summaryHtmlVice += `</li>`;
-        });
-        summaryHtmlVice += `</ul>`;
-    });
-    summaryHtmlVice += `</div>`;
-
-    // Use flex container for side-by-side layout with CSS classes
+    // Only show the table in the results-flex-container
     resultsList.innerHTML = `
         <div class="results-flex-container">
             <div class="results-table-box">${tableHtml}</div>
-            ${summaryHtmlCaptain}
-            ${summaryHtmlVice}
+        </div>
+        <div style="text-align:center;margin-top:2em;">
+            <button class="vote-btn" style="font-size:1.1em;padding:12px 28px;" onclick="showFinalResults()">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:8px;"><path d="M8 21h8M12 17v4M17 5V3a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v2M21 5a3 3 0 0 1-3 3c-1.5 0-3-1.5-3-3M3 5a3 3 0 0 0 3 3c1.5 0 3-1.5 3-3"/><path d="M17 5a5 5 0 0 1-10 0"/></svg>
+                Final Results
+            </button>
         </div>
     `;
     showSection('results-page');
+}
+
+function showFinalResults() {
+    // Gather votes
+    const votes = JSON.parse(localStorage.getItem('votes') || '[]');
+    // Prepare winners object
+    const winners = {
+        captain: { A: null, B: null },
+        vice: { A: null, B: null }
+    };
+    // Count votes per candidate per group
+    const voteCounts = {
+        captain: { A: {}, B: {} },
+        vice: { A: {}, B: {} }
+    };
+    // Initialize counts
+    Object.keys(profiles).forEach(profileKey => {
+        Object.keys(profiles[profileKey].groups).forEach(groupKey => {
+            profiles[profileKey].groups[groupKey].forEach(candidate => {
+                voteCounts[profileKey][groupKey][candidate.id] = 0;
+            });
+        });
+    });
+    // Tally votes
+    votes.forEach(vote => {
+        if (voteCounts[vote.profile] && voteCounts[vote.profile][vote.group] && voteCounts[vote.profile][vote.group][vote.candidateId] !== undefined) {
+            voteCounts[vote.profile][vote.group][vote.candidateId]++;
+        }
+    });
+    // Find winners
+    Object.keys(voteCounts).forEach(profileKey => {
+        Object.keys(voteCounts[profileKey]).forEach(groupKey => {
+            let maxVotes = -1;
+            let winnerId = null;
+            Object.entries(voteCounts[profileKey][groupKey]).forEach(([cid, count]) => {
+                if (count > maxVotes) {
+                    maxVotes = count;
+                    winnerId = cid;
+                }
+            });
+            winners[profileKey][groupKey] = winnerId;
+        });
+    });
+    // Build winners HTML with photo and congratulations
+    let html = '<div class="final-winners-flex">';
+    Object.keys(winners).forEach(profileKey => {
+        const profile = profiles[profileKey];
+        Object.keys(winners[profileKey]).forEach(groupKey => {
+            const winnerId = winners[profileKey][groupKey];
+            let winnerName = 'No votes';
+            let photoUrl = 'https://via.placeholder.com/90x90.png?text=Photo';
+            if (winnerId) {
+                const candidate = profile.groups[groupKey].find(c => c.id === winnerId);
+                if (candidate) {
+                    winnerName = candidate.name;
+                    // If you have real photos, use candidate.photo or similar here
+                }
+            }
+            html += `
+                <div class='final-winner-card'>
+                    <img src="${photoUrl}" alt="${winnerName}" class="final-winner-photo" />
+                    <div class="final-winner-congrats">🎉 Congratulations!</div>
+                    <div class="final-winner-profile">${profile.name} - Group ${groupKey}</div>
+                    <div class="final-winner-name">${winnerName}</div>
+                </div>
+            `;
+        });
+    });
+    html += '</div>';
+    document.getElementById('final-winners-list').innerHTML = html;
+    document.getElementById('final-results-modal').classList.remove('hidden-section');
+}
+
+function closeFinalResults() {
+    document.getElementById('final-results-modal').classList.add('hidden-section');
 }
 
 // Start at teacher landing

@@ -387,3 +387,54 @@ button:hover, button:focus {
         margin-left: 0;
     }
 } 
+
+.final-winners-flex {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 32px;
+    justify-content: center;
+    align-items: stretch;
+    margin-bottom: 2em;
+}
+.final-winner-card {
+    background: #23233a;
+    border-radius: 14px;
+    box-shadow: 0 4px 18px #0004;
+    padding: 32px 24px 24px 24px;
+    min-width: 220px;
+    max-width: 260px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    position: relative;
+}
+.final-winner-photo {
+    width: 110px;
+    height: 110px;
+    border-radius: 16px;
+    object-fit: cover;
+    background: #33344a;
+    border: 3px solid #fc5c7d;
+    margin-bottom: 18px;
+    box-shadow: 0 2px 12px #fc5c7d33;
+}
+.final-winner-congrats {
+    color: #4BB543;
+    font-size: 1.15em;
+    font-weight: 700;
+    margin-bottom: 0.5em;
+    letter-spacing: 1px;
+}
+.final-winner-profile {
+    color: #fc5c7d;
+    font-size: 1.08em;
+    font-weight: 600;
+    margin-bottom: 0.5em;
+}
+.final-winner-name {
+    color: #6a82fb;
+    font-size: 1.22em;
+    font-weight: 700;
+    margin-bottom: 0.2em;
+} 
