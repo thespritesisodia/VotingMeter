@@ -26,6 +26,7 @@ body::after {
     max-width: 600px;
     margin: 0 auto;
     padding: 40px 24px 32px 24px;
+    margin-top: 70px;
 }
 
 h1 {
@@ -179,6 +180,6 @@ button:hover, button:focus {
     letter-spacing: 2px;
     z-index: 100;
     user-select: none;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'Blair ITC Light', 'Oswald', Arial, sans-serif;
     text-shadow: 0 2px 12px #000a;
 } 
