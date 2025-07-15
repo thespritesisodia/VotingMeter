@@ -30,6 +30,28 @@ const profiles = {
 
 let selectedProfile = null;
 let selectedGroup = null;
+let teacherTitle = '';
+let teacherName = '';
+
+// Handle teacher landing form
+const teacherForm = document.getElementById('teacher-form');
+if (teacherForm) {
+    teacherForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const titleSelect = document.getElementById('teacher-title');
+        const input = document.getElementById('teacher-name');
+        teacherTitle = titleSelect.value;
+        teacherName = input.value.trim();
+        if (teacherTitle && teacherName) {
+            localStorage.setItem('teacherTitle', teacherTitle);
+            localStorage.setItem('teacherName', teacherName);
+            showSection('profile-selection');
+        } else {
+            if (!teacherTitle) titleSelect.focus();
+            else input.focus();
+        }
+    });
+}
 
 function showSection(sectionId) {
     document.querySelectorAll('section').forEach(sec => {
@@ -83,7 +105,7 @@ function goBackToGroup() {
 }
 
 function goToHome() {
-    showSection('profile-selection');
+    showSection('teacher-landing');
 }
 
 function showResults() {
@@ -91,5 +113,5 @@ function showResults() {
     showSection('results-page');
 }
 
-// Start at home
-showSection('profile-selection'); 
+// Start at teacher landing
+showSection('teacher-landing'); 

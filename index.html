@@ -8,19 +8,42 @@
 </head>
 <body>
     <div id="app">
+        <!-- Teacher Name Landing Page -->
+        <section id="teacher-landing" class="active-section">
+            <h1>Welcome Teacher</h1>
+            <h2>Please enter your name to continue</h2>
+            <form id="teacher-form" autocomplete="off">
+                <div class="teacher-input-row">
+                    <select id="teacher-title" name="teacher-title" required>
+                        <option value="" disabled selected>Title</option>
+                        <option value="Mr.">Mr.</option>
+                        <option value="Miss.">Miss.</option>
+                        <option value="Mrs.">Mrs.</option>
+                    </select>
+                    <input type="text" id="teacher-name" name="teacher-name" placeholder="Enter your name" required />
+                </div>
+                <button type="submit">Continue</button>
+            </form>
+        </section>
+
         <!-- Profile Selection -->
-        <section id="profile-selection" class="active-section">
+        <section id="profile-selection" class="hidden-section">
             <h1>Vote for Your Leaders</h1>
             <h2>Select Profile</h2>
-            <button onclick="selectProfile('captain')">School Captain</button>
-            <button onclick="selectProfile('vice')">Vice Captain</button>
+            <div class="button-row">
+                <button onclick="selectProfile('captain')">School Captain</button>
+                <button onclick="selectProfile('vice')">Vice Captain</button>
+            </div>
+            <button onclick="goToHome()" class="home-btn">Home</button>
         </section>
 
         <!-- Group Selection -->
         <section id="group-selection" class="hidden-section">
             <h2>Select Group</h2>
-            <button onclick="selectGroup('A')">Group A</button>
-            <button onclick="selectGroup('B')">Group B</button>
+            <div class="button-row">
+                <button onclick="selectGroup('A')">Group A</button>
+                <button onclick="selectGroup('B')">Group B</button>
+            </div>
             <button onclick="goBackToProfile()">Back</button>
         </section>
 
