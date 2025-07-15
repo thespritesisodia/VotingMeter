@@ -168,4 +168,17 @@ button:hover, button:focus {
 }
 #results-list {
     margin: 28px 0;
+}
+#site-title {
+    position: fixed;
+    top: 24px;
+    left: 32px;
+    font-size: 2rem;
+    font-weight: 900;
+    color: #fff;
+    letter-spacing: 2px;
+    z-index: 100;
+    user-select: none;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    text-shadow: 0 2px 12px #000a;
 } 
