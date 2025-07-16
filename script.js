@@ -64,7 +64,38 @@ function showSection(sectionId) {
 
 function selectProfile(profileKey) {
     selectedProfile = profileKey;
+    renderGroupFlowChart();
     showSection('group-selection');
+}
+
+function renderGroupFlowChart() {
+    const chart = document.getElementById('group-flow-chart');
+    if (!selectedProfile || !chart) {
+        chart.innerHTML = '';
+        return;
+    }
+    const profile = profiles[selectedProfile];
+    // Build the flow chart HTML
+    let html = `<div class='flow-profile'>${profile.name}</div>`;
+    html += `<div class='flow-groups-row'>`;
+    ['A', 'B'].forEach(groupKey => {
+        html += `<div class='flow-group-box'>
+            <div class='flow-group-title'>Group ${groupKey}</div>
+            <svg class='flow-vertical-arrow' width='24' height='36' viewBox='0 0 24 36'>
+                <defs>
+                    <marker id='v-arrowhead-${groupKey}' markerWidth='6' markerHeight='6' refX='3' refY='5' orient='auto'>
+                        <polygon points='0 0, 6 3, 3 6' fill='#6a82fb'/>
+                    </marker>
+                </defs>
+                <line x1='12' y1='0' x2='12' y2='30' stroke='#6a82fb' stroke-width='3' marker-end='url(#v-arrowhead-${groupKey})'/>
+            </svg>`;
+        profile.groups[groupKey].forEach(candidate => {
+            html += `<span class='flow-candidate-name'>${candidate.name}</span>`;
+        });
+        html += `</div>`;
+    });
+    html += `</div>`;
+    chart.innerHTML = html;
 }
 
 function selectGroup(groupKey) {
