@@ -77,26 +77,30 @@ function showCandidates() {
     const groupTitle = document.getElementById('candidate-group-title');
     const candidatesList = document.getElementById('candidates-list');
     const profile = profiles[selectedProfile];
-    const candidates = profile.groups[selectedGroup];
-    groupTitle.textContent = `${profile.name} - Group ${selectedGroup}`;
+    groupTitle.textContent = `${profile.name} - Select Group`;
     candidatesList.innerHTML = '';
-    candidates.forEach(candidate => {
+    // Show only Group A and Group B as voting options
+    ['A', 'B'].forEach(groupKey => {
+        const groupCandidates = profile.groups[groupKey];
         const card = document.createElement('div');
         card.className = 'candidate-card';
         card.innerHTML = `
-            <img src="https://via.placeholder.com/56x56.png?text=Photo" alt="${candidate.name}" class="candidate-photo" />
-            <span class="candidate-name">${candidate.name}</span>
-            <button class="vote-btn" onclick="voteCandidate('${candidate.id}')">Vote</button>
+            <div style="display:flex;align-items:center;gap:18px;">
+                <div>
+                    <div class="candidate-name" style="font-size:1.2em;font-weight:700;">Group ${groupKey}</div>
+                    <div style="font-size:0.98em;color:#ccc;">${groupCandidates.map(c => c.name).join(', ')}</div>
+                </div>
+            </div>
+            <button class="vote-btn" onclick="voteGroup('${groupKey}')">Vote</button>
         `;
         candidatesList.appendChild(card);
     });
 }
 
-function voteCandidate(candidateId) {
+function voteGroup(groupKey) {
     const title = localStorage.getItem('teacherTitle') || '';
     const name = localStorage.getItem('teacherName') || '';
     const profile = selectedProfile;
-    const group = selectedGroup;
     // Prevent double voting for the same profile
     const votes = JSON.parse(localStorage.getItem('votes') || '[]');
     const alreadyVoted = votes.some(v => v.teacherTitle === title && v.teacherName === name && v.profile === profile);
@@ -104,13 +108,12 @@ function voteCandidate(candidateId) {
         alert('You have already voted for this profile!');
         return;
     }
-    // Store the vote
+    // Store the vote (for group)
     votes.push({
         teacherTitle: title,
         teacherName: name,
         profile: profile,
-        group: group,
-        candidateId: candidateId
+        group: groupKey
     });
     localStorage.setItem('votes', JSON.stringify(votes));
     // Show thank you message
@@ -130,6 +133,9 @@ function goBackToGroup() {
 }
 
 function goToHome() {
+    // Always hide the final results modal if open
+    const finalModal = document.getElementById('final-results-modal');
+    if (finalModal) finalModal.classList.add('hidden-section');
     showSection('teacher-landing');
 }
 
@@ -193,68 +199,35 @@ function showResults() {
 function showFinalResults() {
     // Gather votes
     const votes = JSON.parse(localStorage.getItem('votes') || '[]');
-    // Prepare winners object
-    const winners = {
-        captain: { A: null, B: null },
-        vice: { A: null, B: null }
+    // Count votes per group for each profile
+    const groupVotes = {
+        captain: { A: 0, B: 0 },
+        vice: { A: 0, B: 0 }
     };
-    // Count votes per candidate per group
-    const voteCounts = {
-        captain: { A: {}, B: {} },
-        vice: { A: {}, B: {} }
-    };
-    // Initialize counts
-    Object.keys(profiles).forEach(profileKey => {
-        Object.keys(profiles[profileKey].groups).forEach(groupKey => {
-            profiles[profileKey].groups[groupKey].forEach(candidate => {
-                voteCounts[profileKey][groupKey][candidate.id] = 0;
-            });
-        });
-    });
-    // Tally votes
     votes.forEach(vote => {
-        if (voteCounts[vote.profile] && voteCounts[vote.profile][vote.group] && voteCounts[vote.profile][vote.group][vote.candidateId] !== undefined) {
-            voteCounts[vote.profile][vote.group][vote.candidateId]++;
+        if (groupVotes[vote.profile] && groupVotes[vote.profile][vote.group] !== undefined) {
+            groupVotes[vote.profile][vote.group]++;
         }
     });
-    // Find winners
-    Object.keys(voteCounts).forEach(profileKey => {
-        Object.keys(voteCounts[profileKey]).forEach(groupKey => {
-            let maxVotes = -1;
-            let winnerId = null;
-            Object.entries(voteCounts[profileKey][groupKey]).forEach(([cid, count]) => {
-                if (count > maxVotes) {
-                    maxVotes = count;
-                    winnerId = cid;
-                }
-            });
-            winners[profileKey][groupKey] = winnerId;
-        });
-    });
-    // Build winners HTML with photo and congratulations
+    // Determine winning group for each profile
+    const winners = {
+        captain: groupVotes.captain.A >= groupVotes.captain.B ? 'A' : 'B',
+        vice: groupVotes.vice.A >= groupVotes.vice.B ? 'A' : 'B'
+    };
+    // Build winners HTML
     let html = '<div class="final-winners-flex">';
-    Object.keys(winners).forEach(profileKey => {
+    ['captain', 'vice'].forEach(profileKey => {
         const profile = profiles[profileKey];
-        Object.keys(winners[profileKey]).forEach(groupKey => {
-            const winnerId = winners[profileKey][groupKey];
-            let winnerName = 'No votes';
-            let photoUrl = 'https://via.placeholder.com/90x90.png?text=Photo';
-            if (winnerId) {
-                const candidate = profile.groups[groupKey].find(c => c.id === winnerId);
-                if (candidate) {
-                    winnerName = candidate.name;
-                    // If you have real photos, use candidate.photo or similar here
-                }
-            }
-            html += `
-                <div class='final-winner-card'>
-                    <img src="${photoUrl}" alt="${winnerName}" class="final-winner-photo" />
-                    <div class="final-winner-congrats">🎉 Congratulations!</div>
-                    <div class="final-winner-profile">${profile.name} - Group ${groupKey}</div>
-                    <div class="final-winner-name">${winnerName}</div>
-                </div>
-            `;
-        });
+        const groupKey = winners[profileKey];
+        const groupCandidates = profile.groups[groupKey];
+        html += `
+            <div class='final-winner-card'>
+                <div class="final-winner-congrats">🎉 Congratulations!</div>
+                <div class="final-winner-profile">${profile.name} - Group ${groupKey}</div>
+                <div class="final-winner-name">${groupCandidates.map(c => c.name).join(', ')}</div>
+                <div style="color:#4BB543;font-size:1.1em;margin-top:0.5em;">Total Votes: ${groupVotes[profileKey][groupKey]}</div>
+            </div>
+        `;
     });
     html += '</div>';
     document.getElementById('final-winners-list').innerHTML = html;
