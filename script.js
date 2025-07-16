@@ -100,8 +100,28 @@ function renderGroupFlowChart() {
 
 function selectGroup(groupKey) {
     selectedGroup = groupKey;
-    showCandidates();
+    showGroupCandidates();
     showSection('candidate-voting');
+}
+
+function showGroupCandidates() {
+    const groupTitle = document.getElementById('candidate-group-title');
+    const candidatesList = document.getElementById('candidates-list');
+    const profile = profiles[selectedProfile];
+    const groupCandidates = profile.groups[selectedGroup];
+    groupTitle.textContent = `${profile.name} - Group ${selectedGroup}`;
+    candidatesList.innerHTML = '';
+    // Show only the candidates of the selected group
+    const card = document.createElement('div');
+    card.className = 'candidate-card';
+    card.innerHTML = `
+        <div>
+            <div class="candidate-name" style="font-size:1.2em;font-weight:700;">Group ${selectedGroup}</div>
+            <div style="font-size:0.98em;color:#ccc;">${groupCandidates.map(c => c.name).join(', ')}</div>
+        </div>
+        <button class="vote-btn" onclick="voteGroup('${selectedGroup}')">Vote</button>
+    `;
+    candidatesList.appendChild(card);
 }
 
 function showCandidates() {
