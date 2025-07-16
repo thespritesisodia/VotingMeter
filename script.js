@@ -236,7 +236,7 @@ function showResults() {
                 <td style='padding:10px 8px;'>${vote.teacherTitle} ${vote.teacherName}</td>
                 <td style='padding:10px 8px;'>${profileDisplay}</td>
                 <td style='padding:10px 8px;'>Group ${vote.group}</td>
-                <td style='padding:10px 8px;'>${candidateName}</td>
+                <td style='padding:10px 8px;'>${candidateName || '-'}</td>
             </tr>`;
         });
     }
@@ -247,14 +247,29 @@ function showResults() {
         <div class="results-flex-container">
             <div class="results-table-box">${tableHtml}</div>
         </div>
-        <div style="text-align:center;margin-top:2em;">
+        <div class="results-btn-row">
             <button class="vote-btn" style="font-size:1.1em;padding:12px 28px;" onclick="showFinalResults()">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:8px;"><path d="M8 21h8M12 17v4M17 5V3a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v2M21 5a3 3 0 0 1-3 3c-1.5 0-3-1.5-3-3M3 5a3 3 0 0 0 3 3c1.5 0 3-1.5 3-3"/><path d="M17 5a5 5 0 0 1-10 0"/></svg>
                 Final Results
             </button>
+            <button class="vote-btn red" style="font-size:1.1em;padding:12px 28px;" onclick="resetResults()">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:8px;"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+                Reset Results
+            </button>
         </div>
     `;
     showSection('results-page');
+}
+
+function resetResults() {
+    const password = prompt('Enter reset password:');
+    if (password !== 'Sprite@1109') {
+        alert('Incorrect password!');
+        return;
+    }
+    localStorage.removeItem('votes');
+    alert('Results have been reset!');
+    location.reload();
 }
 
 function showFinalResults() {
