@@ -4,12 +4,12 @@ const profiles = {
         name: 'School Captain',
         groups: {
             A: [
-                { id: 'c1', name: 'Alice' },
-                { id: 'c2', name: 'Bob' }
+                { id: 'c1', name: 'Bhoomi Sharma' },
+                { id: 'c2', name: 'Shahid' }
             ],
             B: [
-                { id: 'c3', name: 'Carol' },
-                { id: 'c4', name: 'Dave' }
+                { id: 'c3', name: 'Sneha Nigam' },
+                { id: 'c4', name: 'Rohit Bharadwaj' }
             ]
         }
     },
@@ -17,12 +17,12 @@ const profiles = {
         name: 'Vice Captain',
         groups: {
             A: [
-                { id: 'v1', name: 'Eve' },
-                { id: 'v2', name: 'Frank' }
+                { id: 'v1', name: 'Vanshika Pathak' },
+                { id: 'v2', name: 'Devansh Singh' }
             ],
             B: [
-                { id: 'v3', name: 'Grace' },
-                { id: 'v4', name: 'Heidi' }
+                { id: 'v3', name: 'Shalu Sharma' },
+                { id: 'v4', name: 'Vikram Jana' }
             ]
         }
     }
@@ -111,13 +111,23 @@ function showGroupCandidates() {
     const groupCandidates = profile.groups[selectedGroup];
     groupTitle.textContent = `${profile.name} - Group ${selectedGroup}`;
     candidatesList.innerHTML = '';
-    // Show only the candidates of the selected group
+    // Show candidate photos and names side by side
     const card = document.createElement('div');
     card.className = 'candidate-card';
+    let candidatesHtml = '<div class="group-candidates-row">';
+    groupCandidates.forEach(candidate => {
+        candidatesHtml += `
+            <div class="group-candidate-box">
+                <img src="https://via.placeholder.com/90x90.png?text=Photo" alt="${candidate.name}" class="group-candidate-photo" />
+                <div class="group-candidate-name">${candidate.name}</div>
+            </div>
+        `;
+    });
+    candidatesHtml += '</div>';
     card.innerHTML = `
         <div>
             <div class="candidate-name" style="font-size:1.2em;font-weight:700;">Group ${selectedGroup}</div>
-            <div style="font-size:0.98em;color:#ccc;">${groupCandidates.map(c => c.name).join(', ')}</div>
+            ${candidatesHtml}
         </div>
         <button class="vote-btn" onclick="voteGroup('${selectedGroup}')">Vote</button>
     `;
