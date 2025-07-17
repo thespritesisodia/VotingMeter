@@ -106,6 +106,17 @@
             <button onclick="closeFinalResults()">Close</button>
         </div>
     </div>
+    <div id="password-modal" class="hidden-section">
+        <div class="password-modal-content">
+            <h3 id="password-modal-title">Enter Password</h3>
+            <input type="password" id="password-modal-input" placeholder="Password" autocomplete="off" />
+            <div class="password-modal-actions">
+                <button onclick="confirmPasswordModal()">Confirm</button>
+                <button onclick="closePasswordModal()">Cancel</button>
+            </div>
+            <div id="password-modal-error" style="color:#fc5c7d;margin-top:8px;display:none;font-size:0.98em;"></div>
+        </div>
+    </div>
     <footer id="site-footer">
         <span class="copyright-logo">&copy;</span> 2025 Sprite Nestorial Sisodia
     </footer>

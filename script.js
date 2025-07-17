@@ -4,12 +4,12 @@ const profiles = {
         name: 'School Captain',
         groups: {
             A: [
-                { id: 'c1', name: 'Bhoomi Sharma' },
-                { id: 'c2', name: 'Shahid' }
+                { id: 'c1', name: 'Bhoomi Sharma', photo: 'photos/Bhoomi.jpeg' },
+                { id: 'c2', name: 'Shahid', photo: 'photos/Shahid.jpeg' }
             ],
             B: [
-                { id: 'c3', name: 'Sneha Nigam' },
-                { id: 'c4', name: 'Rohit Bharadwaj' }
+                { id: 'c3', name: 'Sneha Nigam', photo: 'photos/Sneha.jpeg' },
+                { id: 'c4', name: 'Rohit Bharadwaj', photo: 'https://via.placeholder.com/90x90.png?text=Photo' }
             ]
         }
     },
@@ -17,12 +17,12 @@ const profiles = {
         name: 'Vice Captain',
         groups: {
             A: [
-                { id: 'v1', name: 'Vanshika Pathak' },
-                { id: 'v2', name: 'Devansh Singh' }
+                { id: 'v1', name: 'Vanshika Pathak', photo: 'photos/Vanshika.jpeg' },
+                { id: 'v2', name: 'Devansh Singh', photo: 'photos/Devansh.jpeg' }
             ],
             B: [
-                { id: 'v3', name: 'Shalu Sharma' },
-                { id: 'v4', name: 'Vikram Jana' }
+                { id: 'v3', name: 'Shalu Sharma', photo: 'photos/Shalu.jpeg' },
+                { id: 'v4', name: 'Vikram Jana', photo: 'photos/Vikram Jana.jpeg' }
             ]
         }
     }
@@ -118,7 +118,7 @@ function showGroupCandidates() {
     groupCandidates.forEach(candidate => {
         candidatesHtml += `
             <div class="group-candidate-box">
-                <img src="https://via.placeholder.com/90x90.png?text=Photo" alt="${candidate.name}" class="group-candidate-photo" />
+                <img src="${candidate.photo}" alt="${candidate.name}" class="group-candidate-photo" />
                 <div class="group-candidate-name">${candidate.name}</div>
             </div>
         `;
@@ -200,12 +200,53 @@ function goToHome() {
     showSection('teacher-landing');
 }
 
-function showResults() {
-    const password = prompt('Enter results password:');
-    if (password !== 'Sprite@12345') {
-        alert('Incorrect password!');
-        return;
+let passwordModalCallback = null;
+let passwordModalPurpose = '';
+
+function openPasswordModal(purpose, callback) {
+    passwordModalPurpose = purpose;
+    passwordModalCallback = callback;
+    document.getElementById('password-modal-input').value = '';
+    document.getElementById('password-modal-error').style.display = 'none';
+    document.getElementById('password-modal').classList.remove('hidden-section');
+    document.getElementById('password-modal-title').textContent = purpose === 'results' ? 'Enter Results Password' : 'Enter Reset Password';
+    setTimeout(() => {
+        document.getElementById('password-modal-input').focus();
+    }, 100);
+}
+
+function closePasswordModal() {
+    document.getElementById('password-modal').classList.add('hidden-section');
+    passwordModalCallback = null;
+    passwordModalPurpose = '';
+}
+
+function confirmPasswordModal() {
+    const input = document.getElementById('password-modal-input').value;
+    const errorDiv = document.getElementById('password-modal-error');
+    errorDiv.style.display = 'none';
+    if (passwordModalPurpose === 'results') {
+        if (input !== 'Sprite@12345') {
+            errorDiv.textContent = 'Incorrect password!';
+            errorDiv.style.display = 'block';
+            return;
+        }
+    } else if (passwordModalPurpose === 'reset') {
+        if (input !== 'Sprite@1109') {
+            errorDiv.textContent = 'Incorrect password!';
+            errorDiv.style.display = 'block';
+            return;
+        }
     }
+    closePasswordModal();
+    if (passwordModalCallback) passwordModalCallback();
+}
+
+function showResults() {
+    openPasswordModal('results', showResultsUnlocked);
+}
+
+function showResultsUnlocked() {
     // Prepare results
     const votes = JSON.parse(localStorage.getItem('votes') || '[]');
     const resultsList = document.getElementById('results-list');
@@ -262,11 +303,10 @@ function showResults() {
 }
 
 function resetResults() {
-    const password = prompt('Enter reset password:');
-    if (password !== 'Sprite@1109') {
-        alert('Incorrect password!');
-        return;
-    }
+    openPasswordModal('reset', resetResultsUnlocked);
+}
+
+function resetResultsUnlocked() {
     localStorage.removeItem('votes');
     alert('Results have been reset!');
     location.reload();
