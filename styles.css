@@ -187,12 +187,12 @@ button:hover, button:focus {
     min-height: 110px;
 }
 .candidate-photo {
-    width: 90px;
-    height: 90px;
-    border-radius: 12px;
+    width: 140px;
+    height: 140px;
+    border-radius: 18px;
     object-fit: cover;
     background: #33344a;
-    margin-right: 12px;
+    margin-right: 18px;
     border: 2px solid #fc5c7d;
     flex-shrink: 0;
     display: block;
@@ -522,15 +522,16 @@ button:hover, button:focus {
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
+    margin: 0 8px;
 }
 .group-candidate-photo {
-    width: 90px;
-    height: 90px;
-    border-radius: 12px;
+    width: 140px;
+    height: 140px;
+    border-radius: 18px;
     object-fit: cover;
     background: #33344a;
     border: 2px solid #fc5c7d;
-    margin-bottom: 8px;
+    margin-bottom: 12px;
     box-shadow: 0 2px 8px #fc5c7d33;
 }
 .group-candidate-name {
